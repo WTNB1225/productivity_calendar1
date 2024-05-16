@@ -1,0 +1,9 @@
+FROM mysql:8.0
+
+ENV MYSQL_ROOT_PASSWORD=root
+ENV MYSQL_DATABASE=Productivity_calendar
+ENV MYSQL_USER=WTNB
+ENV MYSQL_PASSWORD=WTNB
+ENV LANG=C.UTF-8
+
+COPY ./my.cnf /etc/mysql/conf.d/

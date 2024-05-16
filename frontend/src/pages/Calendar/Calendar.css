@@ -1,0 +1,9 @@
+.disabled {
+    color: gray;
+  }
+  
+  .day {
+    width: 175px;
+    height: 60px;
+    padding-bottom: 20px;
+  }
