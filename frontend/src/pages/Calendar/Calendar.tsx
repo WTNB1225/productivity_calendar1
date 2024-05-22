@@ -1,6 +1,8 @@
-import  { useState, useEffect } from "react";
+/* eslint-disable react-hooks/rules-of-hooks */
+import { useState, useEffect } from "react";
 import "./Calendar.css"
 import useCheckLoginStatus from "../../hooks/useCheckLoginStatus";
+import axios from "axios";
 function Calendar() {
   const weeks = ['日', '月', '火', '水', '木', '金', '土'];
   const [username, setUsername] = useState(''); // ユーザー名
@@ -8,14 +10,13 @@ function Calendar() {
   const [month, setMonth] = useState(new Date().getMonth() + 1);
   const [calendarHtml, setCalendarHtml] = useState('');
 
-  Promise.resolve(useCheckLoginStatus()).then((response) => {
-    setUsername(response.user.username);
-  });
-
   useEffect(() => {
     let ignore = false;
     if(!ignore) {
       showCalendar(year, month);
+    Promise.resolve(useCheckLoginStatus()).then((response) => {
+      setUsername(response.user.username);
+    });
     }
     return(() => {ignore = true;});
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -83,11 +84,33 @@ function Calendar() {
     }
   }
 
+  const handleLogout = async() => {
+    try{
+      const response = await axios.get(
+        import.meta.env.VITE_API_URL + '/auth',
+        {
+          headers: {
+            'Accept': 'application/json',
+          },
+          withCredentials: true
+        }
+      );
+      console.log(response.data); 
+      window.location.href = '/';
+    } catch(e) {
+      console.error(e);
+    }
+  }
+
+
+
   return(
     <div>
       <div>
         <button onClick={handlePreviousClick}>先月</button>
         <button onClick={handleNextClick}>来月</button>
+        <button onClick={handleLogout}>ログアウト</button>
+        <button >更新</button>
       </div>
       <div dangerouslySetInnerHTML={{__html: calendarHtml}}></div>
     </div>

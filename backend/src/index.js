@@ -10,7 +10,7 @@ const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const calendar_1 = __importDefault(require("./routes/calendar"));
 const code_1 = __importDefault(require("./routes/code"));
-const verify_1 = __importDefault(require("./routes/verify"));
+const auth_1 = __importDefault(require("./routes/auth"));
 const index_1 = __importDefault(require("./routes/index"));
 const count_1 = __importDefault(require("./routes/count"));
 dotenv_1.default.config();
@@ -27,7 +27,7 @@ app.use('/', index_1.default);
 app.use('/count', count_1.default);
 app.use('/calendar', calendar_1.default);
 app.use('/code', code_1.default);
-app.use('/verify', verify_1.default);
+app.use('/auth', auth_1.default);
 app.get('/', (req, res) => {
     res.send('Hello World!');
 });

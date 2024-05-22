@@ -2,7 +2,7 @@ import axios from "axios";
 async function useCheckLoginStatus() {
   try {
     const response = await axios.get(
-      import.meta.env.VITE_API_URL + '/verify',
+      import.meta.env.VITE_API_URL + '/auth/check',
       {
         headers: {
           'Accept': 'application/json',

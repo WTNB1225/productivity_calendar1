@@ -37,9 +37,9 @@ router.post('/', async (req: Request, res: Response) => {
           create: data
       });
       const payload = {userId: user.id, username: user.login};
-      const token = jwt.sign(payload, process.env.JWT_SECRET as string, {expiresIn: '1h'});
-      res.cookie('token', token, {httpOnly: true, sameSite: 'none', secure: true})
-      res.cookie('username', user.login, {httpOnly: true, sameSite: 'none', secure: true});
+      const token = jwt.sign(payload, process.env.JWT_SECRET as string, {expiresIn: '2h'});
+      res.cookie('token', token, {httpOnly: true, sameSite: 'none', secure: true, maxAge: 100 * 365 * 24 * 60 * 60 * 1000 })
+      res.cookie('username', user.login, {httpOnly: true, sameSite: 'none', secure: true, maxAge: 100 * 365 * 24 * 60 * 60 * 1000 });
       res.status(200).json({ token: response.data.access_token, repos: repos, user: user });
   } catch (error: any) {
       console.error(error.response);
