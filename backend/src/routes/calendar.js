@@ -13,14 +13,42 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const client_1 = require("@prisma/client");
 const router = express_1.default.Router();
+const prisma = new client_1.PrismaClient({ log: ['query'] });
+router.post('/month', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const date = new Date();
+    const yaer = date.getFullYear();
+    const month = date.getMonth() + 1;
+    const userId = req.body.userId;
+    const calendarMonth = `${yaer}-${month}-${userId}`;
+    try {
+        const data = yield prisma.calendars.findMany({
+            where: {
+                calendarMonth: calendarMonth
+            }
+        });
+        res.status(200).json({ data: data });
+    }
+    catch (e) {
+        console.error(e);
+        res.status(500).json({ error: 'An error occurred' });
+    }
+}));
 router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const date = new Date();
     const yaer = date.getFullYear();
     const month = date.getMonth() + 1;
     const day = date.getDate();
     const userId = req.body.userId;
+    const calendarId = `${yaer}-${month}-${day}-${userId}`;
     try {
+        const data = yield prisma.calendars.findFirst({
+            where: {
+                calendarId: calendarId
+            }
+        });
+        res.status(200).json({ data: data });
     }
     catch (e) {
         console.error(e);

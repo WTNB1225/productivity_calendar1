@@ -1,26 +1,67 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useState, useEffect } from "react";
 import "./Calendar.css"
-import useCheckLoginStatus from "../../hooks/useCheckLoginStatus";
+import useCheckLoginStatus from "../../api/CheckLoginStatus";
 import axios from "axios";
+
+
 function Calendar() {
   const weeks = ['日', '月', '火', '水', '木', '金', '土'];
   const [username, setUsername] = useState(''); // ユーザー名
   const [year, setYear] = useState(new Date().getFullYear());
   const [month, setMonth] = useState(new Date().getMonth() + 1);
+  //const [day, setDay] = useState(new Date().getDate()); // 今日の日付
   const [calendarHtml, setCalendarHtml] = useState('');
+  const [userId, setUserId] = useState<number>(0);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     let ignore = false;
+    
     if(!ignore) {
       showCalendar(year, month);
-    Promise.resolve(useCheckLoginStatus()).then((response) => {
-      setUsername(response.user.username);
-    });
+      Promise.resolve(useCheckLoginStatus()).then((response) => {
+        setUsername(response.user.username);
+        setUserId(response.user.userId)
+        setLoading(false);
+      });
     }
     return(() => {ignore = true;});
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [year, month, username]);
+
+  useEffect(() => {
+    let ignore = false;
+
+    const fetchCalendarData = async () => {
+      try {
+        const response = await axios.post(
+          import.meta.env.VITE_API_URL + '/calendar/',
+          {
+            userId: userId
+          },
+          {
+            headers: {
+              'Accept': 'application/json',
+            },
+            withCredentials: true
+          }
+        )
+        console.log(response.data)
+
+      } catch(e:unknown){
+        console.error(e);
+        return;
+      }
+    }
+
+    if(!ignore && !loading) {
+      fetchCalendarData();
+    }
+    return () => {ignore = true;}
+  },[loading, userId])
+
+
 
   function showCalendar(year: number, month: number) {
     const date = new Date(year, month - 1, 1); // 月の最初の日を取得

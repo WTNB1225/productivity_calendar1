@@ -65,9 +65,9 @@ router.get('/:username/:userId', async(req: Request, res: Response) => {
           select: {
               total_number: true
           }
-      }) ?? {total_number: 0};
+      }) ?? {total_number: 0 };
 
-      const data = {calendarId: `${year}-${month}-${day}-${userId}`, calendar_Day: `${year}-${month}-${day}`, calendarOwnerId: userId, total_number: total, day_number: total - prevCode.total_number};
+      const data = {calendarId: `${year}-${month}-${day}-${userId}`, calendarMonth: `${year}-${month}-${userId}`, calendar_Day: `${year}-${month}-${day}`, calendarOwnerId: userId, total_number: total, day_number: total - prevCode.total_number};
       await prisma.calendars.upsert({
           where: {
               calendarId: `${year}-${month}-${day}-${userId}`
