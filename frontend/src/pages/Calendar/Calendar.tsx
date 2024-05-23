@@ -69,11 +69,11 @@ function Calendar() {
         const day1 = data.calendar_Day;
         const dayHtml = document.getElementById(day1);
         if(dayHtml) {
-          const br = dayHtml.firstElementChild;
-          if(br) {
-            br.remove();
+          const div = dayHtml.firstElementChild;
+          if(div) {
+            div.remove();
           }
-          dayHtml.innerHTML = dayHtml.innerHTML + `<br class="num">${data.day_number}行`;
+          dayHtml.innerHTML = dayHtml.innerHTML + `<div class="num">${data.day_number}行</div>`;
         }
       })
     } catch(e:unknown){
