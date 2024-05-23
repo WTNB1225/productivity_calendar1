@@ -22,6 +22,7 @@ function Calendar() {
   const [calendarHtml, setCalendarHtml] = useState('');
   const [userId, setUserId] = useState<number>(0);
   const [loading, setLoading] = useState(true);
+  const [rerender, setRerender] = useState(false);
 
   useEffect(() => {
     const fetchLoginStatus = async () => {
@@ -48,7 +49,7 @@ function Calendar() {
     }
     return () => {ignore = true;}
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  },[loading, userId, month])
+  },[loading, userId, month, rerender])
 
   const fetchCalendarData = async () =>{
     try {
@@ -152,6 +153,7 @@ function Calendar() {
         import.meta.env.VITE_API_URL + `/count/${username}/${userId}`,
       )
       console.log(response.status);
+      setRerender(!rerender);
     } catch(e: unknown){
       console.log(e)
     }

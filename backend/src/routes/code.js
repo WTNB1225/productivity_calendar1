@@ -36,7 +36,6 @@ router.post('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         });
         const repos = yield (0, api_1.getUsersAllRepos)(response.data.access_token);
         const user = yield (0, api_1.getUserInfo)(response.data.access_token);
-        //const hashedAccessToken = await bcrypt.hash(response.data.access_token, 10);
         const data = { userId: user.id, username: user.login, accessToken: response.data.access_token };
         yield prisma.users.upsert({
             where: { userId: user.id },

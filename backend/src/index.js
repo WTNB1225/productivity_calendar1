@@ -11,7 +11,6 @@ const cookie_parser_1 = __importDefault(require("cookie-parser"));
 const calendar_1 = __importDefault(require("./routes/calendar"));
 const code_1 = __importDefault(require("./routes/code"));
 const auth_1 = __importDefault(require("./routes/auth"));
-const index_1 = __importDefault(require("./routes/index"));
 const count_1 = __importDefault(require("./routes/count"));
 dotenv_1.default.config();
 const app = (0, express_1.default)();
@@ -23,7 +22,6 @@ app.use((0, cors_1.default)({
     credentials: true,
 }));
 app.use((0, cookie_parser_1.default)());
-app.use('/', index_1.default);
 app.use('/count', count_1.default);
 app.use('/calendar', calendar_1.default);
 app.use('/code', code_1.default);

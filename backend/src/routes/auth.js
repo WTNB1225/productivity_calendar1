@@ -15,13 +15,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const dotenv_1 = __importDefault(require("dotenv"));
-const cookie_parser_1 = __importDefault(require("cookie-parser"));
-(0, express_1.default)().use((0, cookie_parser_1.default)());
 dotenv_1.default.config();
 const router = express_1.default.Router();
 router.get('/check', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
-    console.log(req.cookies);
     const token = (_a = req.cookies.token) !== null && _a !== void 0 ? _a : { value: "" };
     const secretKey = process.env.JWT_SECRET;
     try {
@@ -32,8 +29,7 @@ router.get('/check', (req, res) => __awaiter(void 0, void 0, void 0, function* (
         res.status(401).json({ error: 'Unauthorized' });
     }
 }));
-router.get('/', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(req.cookies);
+router.get('/logout', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     res.cookie('token', '', {
         httpOnly: true,
         secure: true,

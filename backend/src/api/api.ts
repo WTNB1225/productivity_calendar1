@@ -12,7 +12,7 @@ async function extractShaId({
   reposName: string;
   access_token: string;
   id: number;
-}) {
+}): Promise<Sha | undefined>{
   const url = 'https://api.github.com/repos/' + username + '/' + reposName + '/commits'; 
   const shaData: string[] = [];
   try {

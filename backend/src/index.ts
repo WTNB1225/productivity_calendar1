@@ -6,7 +6,6 @@ import cookieParser from 'cookie-parser';
 import calendarRouter from './routes/calendar';
 import codeRouter from './routes/code';
 import verifyRouter from './routes/auth';
-import indexRouter from './routes/index';
 import countRouter from './routes/count';
 
 dotenv.config();
@@ -23,7 +22,6 @@ app.use(cors({
 
 app.use(cookieParser());
 
-app.use('/', indexRouter);
 app.use('/count', countRouter);
 app.use('/calendar', calendarRouter);
 app.use('/code', codeRouter);

@@ -12,7 +12,7 @@ function Auth() {
         let ignore = false;
         async function post() {
             try{
-                const response = await axios.post(
+                await axios.post(
                     url,
                     {
                         code: code
@@ -24,7 +24,6 @@ function Auth() {
                         withCredentials: true
                     }
                 );
-                console.log(response.status);
                 setShouldRedirect(true);
                 setRedirectPath('/calendar');
             } catch (error: unknown) {

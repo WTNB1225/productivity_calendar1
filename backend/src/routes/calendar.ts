@@ -17,7 +17,7 @@ router.post('/month', async(req: Request, res: Response) => {
       }
     });
     res.status(200).json({data: data});
-  } catch(e) {
+  } catch(e: any) {
       console.error(e);
       res.status(500).json({error: 'An error occurred'});
   }

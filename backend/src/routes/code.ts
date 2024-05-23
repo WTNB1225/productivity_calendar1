@@ -11,7 +11,7 @@ const router = express.Router();
 const prisma = new PrismaClient({log: ['query']});
 
 router.post('/', async (req: Request, res: Response) => {
-  const code = req.body.code;
+  const code: number = req.body.code;
 　　const githubUrl = 'https://github.com/login/oauth/access_token';
   try {
       const response = await axios.post(
@@ -29,7 +29,6 @@ router.post('/', async (req: Request, res: Response) => {
       );
       const repos = await getUsersAllRepos(response.data.access_token);
       const user = await getUserInfo(response.data.access_token);
-      //const hashedAccessToken = await bcrypt.hash(response.data.access_token, 10);
       const data = {userId: user.id, username: user.login, accessToken: response.data.access_token};
       await prisma.users.upsert({
           where: { userId: user.id },

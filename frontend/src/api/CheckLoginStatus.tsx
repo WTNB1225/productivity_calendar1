@@ -12,7 +12,7 @@ async function checkLoginStatus() {
     );
     return response.data;
   } catch(e: unknown) {
-    return {message: 'error'}
+    return;
   }
 }
 

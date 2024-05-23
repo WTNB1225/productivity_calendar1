@@ -6,11 +6,8 @@ dotenv.config();
 
 const router = express.Router();
 
-
-
 router.get('/check', async(req: Request, res: Response) => {
-  console.log(req.cookies)
-  const token = req.cookies.token ?? { value: "" };
+  const token: string = req.cookies.token ?? { value: "" };
   const secretKey = process.env.JWT_SECRET as string;
   try{
       const user = jwt.verify(token, secretKey);
