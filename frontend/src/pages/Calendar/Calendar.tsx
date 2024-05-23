@@ -69,7 +69,10 @@ function Calendar() {
         const day1 = data.calendar_Day;
         const dayHtml = document.getElementById(day1);
         if(dayHtml) {
-          dayHtml.textContent = "";
+          const br = dayHtml.firstElementChild;
+          if(br) {
+            br.remove();
+          }
           dayHtml.innerHTML = dayHtml.innerHTML + `<br class="num">${data.day_number}行`;
         }
       })
