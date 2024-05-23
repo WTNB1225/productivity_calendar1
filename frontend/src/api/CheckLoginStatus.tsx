@@ -1,5 +1,5 @@
 import axios from "axios";
-async function useCheckLoginStatus() {
+async function checkLoginStatus() {
   try {
     const response = await axios.get(
       import.meta.env.VITE_API_URL + '/auth/check',
@@ -12,8 +12,8 @@ async function useCheckLoginStatus() {
     );
     return response.data;
   } catch(e: unknown) {
-    console.error(e);
+    return {message: 'error'}
   }
 }
 
-export default useCheckLoginStatus;
+export default checkLoginStatus;

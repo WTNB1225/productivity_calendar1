@@ -24,7 +24,7 @@ export default function useFetchLinesOfCode(userId: number) {
           withCredentials: true
         }
       )
-      console.log(response.data)
+      console.log(response.status);
     } catch(e:unknown){
       console.error(e);
     }

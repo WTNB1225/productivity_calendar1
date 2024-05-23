@@ -1,69 +1,83 @@
 /* eslint-disable react-hooks/rules-of-hooks */
 import { useState, useEffect } from "react";
 import "./Calendar.css"
-import useCheckLoginStatus from "../../api/CheckLoginStatus";
+import checkLoginStatus from "../../api/checkLoginStatus";
 import axios from "axios";
+
+interface Data {
+  calendarId: string;
+  total_number: number;
+  calendarMonth: string;
+  calendar_Day: string;
+  day_number: number;
+  calendarOwnerId: number;
+}
 
 
 function Calendar() {
   const weeks = ['日', '月', '火', '水', '木', '金', '土'];
-  const [username, setUsername] = useState(''); // ユーザー名
+  const [username, setUsername] = useState<string>(); // ユーザー名
   const [year, setYear] = useState(new Date().getFullYear());
   const [month, setMonth] = useState(new Date().getMonth() + 1);
-  //const [day, setDay] = useState(new Date().getDate()); // 今日の日付
   const [calendarHtml, setCalendarHtml] = useState('');
   const [userId, setUserId] = useState<number>(0);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    let ignore = false;
-    
-    if(!ignore) {
-      showCalendar(year, month);
-      Promise.resolve(useCheckLoginStatus()).then((response) => {
+    const fetchLoginStatus = async () => {
+      try {
+        const response = await checkLoginStatus();
         setUsername(response.user.username);
-        setUserId(response.user.userId)
+        setUserId(response.user.userId);
         setLoading(false);
-      });
-    }
-    return(() => {ignore = true;});
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [year, month, username]);
+        console.log(response)
+      } catch (e) {
+        console.log(e);
+        setLoading(false);
+        setUsername('');
+        //window.location.href = '/';
+      }
+    };
+    fetchLoginStatus();
+  }, []);
 
   useEffect(() => {
     let ignore = false;
-
-    const fetchCalendarData = async () => {
-      try {
-        const response = await axios.post(
-          import.meta.env.VITE_API_URL + '/calendar/',
-          {
-            userId: userId
-          },
-          {
-            headers: {
-              'Accept': 'application/json',
-            },
-            withCredentials: true
-          }
-        )
-        console.log(response.data)
-
-      } catch(e:unknown){
-        console.error(e);
-        return;
-      }
-    }
-
-    if(!ignore && !loading) {
+    if(!ignore && !loading && username !== '') {
       fetchCalendarData();
     }
     return () => {ignore = true;}
-  },[loading, userId])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[loading, userId, month])
 
+  const fetchCalendarData = async () =>{
+    try {
+      const response = await axios.post(
+        import.meta.env.VITE_API_URL + '/calendar/month',
+        {
+          userId: userId
+        },
+        {
+          headers: {
+            'Accept': 'application/json',
+          },
+          withCredentials: true
+        }
+      )
+      response.data.data.forEach((data: Data) => {
+        const day1 = data.calendar_Day;
+        const dayHtml = document.getElementById(day1);
+        if(dayHtml) {
+          dayHtml.innerHTML = dayHtml.innerHTML + `<br class="num">${data.day_number}行`;
+        }
+      })
+    } catch(e:unknown){
+      console.error(e);
+      return;
+    }
+  }
 
-
-  function showCalendar(year: number, month: number) {
+  const showCalendar = (year: number, month: number) => {
     const date = new Date(year, month - 1, 1); // 月の最初の日を取得
     const endDate = new Date(year, month, 0); // 月の最後の日を取得
     const endDayCount = endDate.getDate(); // 月の末日
@@ -107,6 +121,13 @@ function Calendar() {
     setCalendarHtml(html);
   }
 
+  useEffect(() => {
+    if (!loading && username !== '') {
+      showCalendar(year, month);
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading, username, year, month]);
+
   const handleNextClick = () => {
     if (month === 12) {
       setYear(year + 1);
@@ -125,6 +146,17 @@ function Calendar() {
     }
   }
 
+  const updateCommitLog = async() => {
+    try {
+      const response = await axios.get(
+        import.meta.env.VITE_API_URL + `/count/${username}/${userId}`,
+      )
+      console.log(response.status);
+    } catch(e: unknown){
+      console.log(e)
+    }
+  }
+
   const handleLogout = async() => {
     try{
       const response = await axios.get(
@@ -136,25 +168,39 @@ function Calendar() {
           withCredentials: true
         }
       );
-      console.log(response.data); 
       window.location.href = '/';
+      alert(response.data.message);
     } catch(e) {
       console.error(e);
     }
   }
 
 
+  if(loading) {
+    return <div>loading...</div>
+  }
+
+  if(loading == false && username == '') {
+    window.location.href = '/';
+    return <div>loading...</div>;
+  }
 
   return(
-    <div>
-      <div>
-        <button onClick={handlePreviousClick}>先月</button>
-        <button onClick={handleNextClick}>来月</button>
-        <button onClick={handleLogout}>ログアウト</button>
-        <button >更新</button>
+    <>
+    {!loading && 
+      <>
+        <div>
+          <div>
+            <button onClick={handlePreviousClick}>先月</button>
+            <button onClick={handleNextClick}>来月</button>
+            <button onClick={handleLogout}>ログアウト</button>
+            <button onClick={updateCommitLog}>更新</button>
+          </div>
+        <div dangerouslySetInnerHTML={{__html: calendarHtml}}></div>
       </div>
-      <div dangerouslySetInnerHTML={{__html: calendarHtml}}></div>
-    </div>
+      </>
+    }
+  </>
   )
 }
 

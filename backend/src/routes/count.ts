@@ -51,16 +51,20 @@ router.get('/:username/:userId', async(req: Request, res: Response) => {
       const linesArrays = await Promise.all(promises);
       const total_array: number[] = linesArrays.flat();
       const total = total_array.reduce((a, b) => a + b, 0);
-      const year = new Date().getFullYear();
-      const month = new Date().getMonth() + 1;
-      const day = new Date().getDate();
-      const previousDay = new Date(year, month - 1, day);
-      const previousDayYear = previousDay.getFullYear();
-      const previousDayMonth = previousDay.getMonth() + 1;
-      const previousDayDay = previousDay.getDate();
+      console.log(total)
+      const today = new Date(); // 現在の日付と時刻
+      const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000); // 前日の日付と時刻
+      // 年、月、日を取得
+      const year = today.getFullYear();
+      const month = today.getMonth() + 1; // JavaScriptの月は0から始まるため、1を加えます
+      const day = today.getDate();
+      
+      const prevDayYear = yesterday.getFullYear();
+      const prevDayMonth = yesterday.getMonth() + 1; // JavaScriptの月は0から始まるため、1を加えます
+      const prevDayDay = yesterday.getDate();
       const prevCode = await prisma.calendars.findFirst({
           where: {
-              calendarId: `${previousDayYear}-${previousDayMonth}-${previousDayDay}-${userId}`
+              calendarId: `${prevDayYear}-${prevDayMonth}-${prevDayDay}-${userId}`
           },
           select: {
               total_number: true

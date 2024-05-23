@@ -60,21 +60,28 @@ router.get('/:username/:userId', (req, res) => __awaiter(void 0, void 0, void 0,
         const linesArrays = yield Promise.all(promises);
         const total_array = linesArrays.flat();
         const total = total_array.reduce((a, b) => a + b, 0);
-        const year = new Date().getFullYear();
-        const month = new Date().getMonth() + 1;
-        const day = new Date().getDate();
-        const previousDay = new Date(year, month - 1, day);
-        const previousDayYear = previousDay.getFullYear();
-        const previousDayMonth = previousDay.getMonth() + 1;
-        const previousDayDay = previousDay.getDate();
+        console.log(total);
+        const today = new Date(); // 現在の日付と時刻
+        const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000); // 前日の日付と時刻
+        // 年、月、日を取得
+        const year = today.getFullYear();
+        const month = today.getMonth() + 1; // JavaScriptの月は0から始まるため、1を加えます
+        const day = today.getDate();
+        const prevDayYear = yesterday.getFullYear();
+        const prevDayMonth = yesterday.getMonth() + 1; // JavaScriptの月は0から始まるため、1を加えます
+        const prevDayDay = yesterday.getDate();
         const prevCode = (_b = yield prisma.calendars.findFirst({
             where: {
-                calendarId: `${previousDayYear}-${previousDayMonth}-${previousDayDay}-${userId}`
+                calendarId: `${prevDayYear}-${prevDayMonth}-${prevDayDay}-${userId}`
             },
             select: {
                 total_number: true
             }
         })) !== null && _b !== void 0 ? _b : { total_number: 0 };
+        console.log(prevCode.total_number);
+        console.log(total_array);
+        console.log(yesterday);
+        console.log(prevDayDay);
         const data = { calendarId: `${year}-${month}-${day}-${userId}`, calendarMonth: `${year}-${month}-${userId}`, calendar_Day: `${year}-${month}-${day}`, calendarOwnerId: userId, total_number: total, day_number: total - prevCode.total_number };
         yield prisma.calendars.upsert({
             where: {

@@ -1,9 +1,7 @@
 import express, { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
-import cookieParser from 'cookie-parser';
 
-express().use(cookieParser());
 dotenv.config();
 
 const router = express.Router();
@@ -22,8 +20,7 @@ router.get('/check', async(req: Request, res: Response) => {
   }
 })
 
-router.get('/', async(req: Request, res: Response) => {
-  console.log(req.cookies)
+router.get('/logout', async(req: Request, res: Response) => {
   res.cookie('token', '', {
     httpOnly: true,
     secure: true,

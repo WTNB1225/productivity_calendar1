@@ -24,7 +24,7 @@ function Auth() {
                         withCredentials: true
                     }
                 );
-                console.log(response.data);
+                console.log(response.status);
                 setShouldRedirect(true);
                 setRedirectPath('/calendar');
             } catch (error: unknown) {
@@ -38,7 +38,8 @@ function Auth() {
             post();
         }
         return(() => {ignore = true;});
-    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    },[])
     if (shouldRedirect) {
         return <Navigate to={redirectPath} />;
     }
